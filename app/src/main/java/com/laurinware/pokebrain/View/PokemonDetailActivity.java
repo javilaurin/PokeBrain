@@ -1,4 +1,4 @@
-package com.laurinware.pokebrain;
+package com.laurinware.pokebrain.View;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -11,29 +11,22 @@ import android.support.v7.app.ActionBar;
 import android.support.v4.app.NavUtils;
 import android.view.MenuItem;
 
+import com.laurinware.pokebrain.R;
+
 /**
- * An activity representing a single Region detail screen. This
+ * An activity representing a single Pokemon detail screen. This
  * activity is only used on narrow width devices. On tablet-size devices,
  * item details are presented side-by-side with a list of items
- * in a {@link RegionListActivity}.
+ * in a {@link PokemonListActivity}.
  */
-public class RegionDetailActivity extends AppCompatActivity {
+public class PokemonDetailActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_region_detail);
+        setContentView(R.layout.activity_pokemon_detail);
         Toolbar toolbar = (Toolbar) findViewById(R.id.detail_toolbar);
         setSupportActionBar(toolbar);
-
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own detail action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
 
         // Show the Up button in the action bar.
         ActionBar actionBar = getSupportActionBar();
@@ -54,12 +47,12 @@ public class RegionDetailActivity extends AppCompatActivity {
             // Create the detail fragment and add it to the activity
             // using a fragment transaction.
             Bundle arguments = new Bundle();
-            arguments.putString(RegionDetailFragment.ARG_ITEM_ID,
-                    getIntent().getStringExtra(RegionDetailFragment.ARG_ITEM_ID));
-            RegionDetailFragment fragment = new RegionDetailFragment();
+            arguments.putString(PokemonDetailFragment.ARG_ITEM_ID,
+                    getIntent().getStringExtra(PokemonDetailFragment.ARG_ITEM_ID));
+            PokemonDetailFragment fragment = new PokemonDetailFragment();
             fragment.setArguments(arguments);
             getSupportFragmentManager().beginTransaction()
-                    .add(R.id.region_detail_container, fragment)
+                    .add(R.id.pokemon_detail_container, fragment)
                     .commit();
         }
     }
@@ -75,7 +68,7 @@ public class RegionDetailActivity extends AppCompatActivity {
             //
             // http://developer.android.com/design/patterns/navigation.html#up-vs-back
             //
-            NavUtils.navigateUpTo(this, new Intent(this, RegionListActivity.class));
+            NavUtils.navigateUpTo(this, new Intent(this, PokemonListActivity.class));
             return true;
         }
         return super.onOptionsItemSelected(item);

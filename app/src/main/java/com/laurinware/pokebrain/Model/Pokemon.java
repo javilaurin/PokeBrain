@@ -31,6 +31,9 @@ public class Pokemon {
     @SerializedName("abilities")
     @Expose
     private List<Ability> abilities = null;
+    @SerializedName("sprites")
+    @Expose
+    private Sprites sprites;
 
     /**
      * No args constructor for use in serialization
@@ -50,7 +53,8 @@ public class Pokemon {
      * @param isDefault
      * @param name
      */
-    public Pokemon(int id, String name, int baseExperience, int height, boolean isDefault, int order, int weight, List<Ability> abilities) {
+    public Pokemon(int id, String name, int baseExperience, int height, boolean isDefault, int order,
+                   int weight, List<Ability> abilities, Sprites sprites) {
         super();
         this.id = id;
         this.name = name;
@@ -60,6 +64,7 @@ public class Pokemon {
         this.order = order;
         this.weight = weight;
         this.abilities = abilities;
+        this.sprites = sprites;
     }
 
     public int getId() {
@@ -124,6 +129,14 @@ public class Pokemon {
 
     public void setAbilities(List<Ability> abilities) {
         this.abilities = abilities;
+    }
+
+    public Sprites getSprites() {
+        return sprites;
+    }
+
+    public void setSprites(Sprites sprites) {
+        this.sprites = sprites;
     }
 
 }

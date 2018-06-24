@@ -1,13 +1,12 @@
-package com.laurinware.pokebrain;
+package com.laurinware.pokebrain.Data;
 
-import android.graphics.Region;
+import android.arch.lifecycle.MutableLiveData;
 import android.util.Log;
 
 import com.laurinware.pokebrain.Model.Pokemon;
 import com.laurinware.pokebrain.Model.PokemonList;
+import com.laurinware.pokebrain.Model.RegionItem;
 import com.laurinware.pokebrain.Model.RegionList;
-
-import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -22,9 +21,12 @@ public class RemoteDataSource {
 
     Retrofit retrofit;
     PokeApiEndpointInterface apiService;
-    PokemonList pokemonList;
-    Pokemon pokemonItem;
-    RegionList regionList;
+
+
+
+    public MutableLiveData<PokemonList> pokemonList;
+    public MutableLiveData<Pokemon> pokemonItem;
+    public MutableLiveData<RegionList> regionList;
 
     public RemoteDataSource(){
 
@@ -34,16 +36,20 @@ public class RemoteDataSource {
                 .build();
 
         apiService = retrofit.create(PokeApiEndpointInterface.class);
+
+        pokemonList = new MutableLiveData<PokemonList>();
+        pokemonItem = new MutableLiveData<Pokemon>();
+        regionList = new MutableLiveData<RegionList>();
     }
 //TODO LiveData
-    public PokemonList getAllPokemon(){
+    public void getAllPokemon(){
         Call<PokemonList> call = apiService.getAllPokemon(appname);
         call.enqueue(new Callback<PokemonList>() {
             @Override
             public void onResponse(Call<PokemonList> call, Response<PokemonList> response) {
                 int statusCode = response.code();
-                pokemonList = response.body();
-                Log.d("RESPONSE", pokemonList.getResults().get(0).getName());
+                pokemonList.setValue(response.body());
+                Log.d("RESPONSE", pokemonList.getValue().getResults().get(0).getName());
             }
 
             @Override
@@ -54,20 +60,19 @@ public class RemoteDataSource {
                         "\nTHROWABLE: " + t.getMessage());
             }
         });
-        return pokemonList;
     }
 
-    public Pokemon getPokemon(String URL){
+    public void getPokemon(String url){
 
-        String[] separated = URL.split("/");
+        String[] separated = url.split("/");
 
         Call<Pokemon> call = apiService.getPokemon(appname,Integer.parseInt(separated[separated.length-1]));
         call.enqueue(new Callback<Pokemon>() {
             @Override
             public void onResponse(Call<Pokemon> call, Response<Pokemon> response) {
                 int statusCode = response.code();
-                pokemonItem = response.body();
-                Log.d("RESPONSE", pokemonItem.getName());
+                pokemonItem.setValue(response.body());
+                Log.d("RESPONSE", pokemonItem.getValue().getName());
             }
 
             @Override
@@ -78,18 +83,17 @@ public class RemoteDataSource {
                         "\nTHROWABLE: " + t.getMessage());
             }
         });
-        return pokemonItem;
     }
 
-    public RegionList getAllRegions(){
+    public void getAllRegions(){
 
         Call<RegionList> call = apiService.getAllRegions(appname);
         call.enqueue(new Callback<RegionList>() {
             @Override
             public void onResponse(Call<RegionList> call, Response<RegionList> response) {
                 int statusCode = response.code();
-                regionList = response.body();
-                Log.d("RESPONSE", regionList.getResults().get(0).getName());
+                regionList.setValue(response.body());
+                Log.d("RESPONSE", regionList.getValue().getResults().get(0).getName());
             }
 
             @Override
@@ -100,6 +104,5 @@ public class RemoteDataSource {
                         "\nTHROWABLE: " + t.getMessage());
             }
         });
-        return regionList;
     }
 }

@@ -10,7 +10,7 @@
     android:divider="?android:attr/dividerHorizontal"
     android:orientation="horizontal"
     android:showDividers="middle"
-    tools:context=".RegionListActivity">
+    tools:context=".View.RegionListActivity">
 
     <!--
     This layout is a two-pane layout for the Regions
@@ -27,7 +27,7 @@
         android:layout_marginLeft="16dp"
         android:layout_marginRight="16dp"
         app:layoutManager="LinearLayoutManager"
-        tools:context="com.laurinware.pokebrain.RegionListActivity"
+        tools:context="com.laurinware.pokebrain.View.RegionListActivity"
         tools:listitem="@layout/region_list_content" />
 
     <FrameLayout

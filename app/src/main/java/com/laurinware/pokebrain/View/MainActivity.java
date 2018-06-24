@@ -1,4 +1,4 @@
-package com.laurinware.pokebrain;
+package com.laurinware.pokebrain.View;
 
 import android.app.AlertDialog;
 import android.content.Context;
@@ -19,16 +19,15 @@ import android.widget.Button;
 import android.widget.Toast;
 
 import com.laurinware.pokebrain.Model.PokemonList;
-import com.laurinware.pokebrain.Model.PokemonListItem;
 import com.laurinware.pokebrain.Model.RegionList;
+import com.laurinware.pokebrain.R;
+import com.laurinware.pokebrain.Data.RemoteDataSource;
+import com.laurinware.pokebrain.ViewModel.PokemonListViewModel;
 
-import java.util.List;
+import java.util.Random;
 
 public class MainActivity extends AppCompatActivity {
 
-    RemoteDataSource remoteDataSource;
-    PokemonList pokemonNamesList;
-    RegionList regionNamesList;
     Context context;
 
     @Override
@@ -45,8 +44,14 @@ public class MainActivity extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+                Random r = new Random();
+                int num = r.nextInt( 802) + 1;
+                Log.d("RANDOM", "Numero: " + num);
+                String url = String.format("https://pokeapi.co/api/v2/pokemon/%1$d/", num);
+                Intent intent = new Intent(context, PokemonDetailActivity.class);
+                intent.putExtra(PokemonDetailFragment.ARG_ITEM_ID, url);
+
+                context.startActivity(intent);
             }
         });
 
@@ -55,11 +60,6 @@ public class MainActivity extends AppCompatActivity {
             Log.d("INTERNET","NO INTERNET");
             Toast.makeText(this, R.string.no_internet, Toast.LENGTH_SHORT).show();
         }
-
-        // Download Pokemon Names JSON
-        remoteDataSource = new RemoteDataSource();
-        pokemonNamesList = remoteDataSource.getAllPokemon();
-        regionNamesList = remoteDataSource.getAllRegions();
 
         context = getApplicationContext();
 

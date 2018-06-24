@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">PokeBrain</string>
+    <string name="regions_textView">Regiones</string>
+    <string name="no_internet">No hay conexión a Internet</string>
+    <string name="action_about_text">Desarrollado por LaurinWare utilizando la PokeApi (www.pokeapi.co)</string>
+    <string name="action_about">Acerca de</string>
+    <string name="action_settings">Ajustes</string>
+    <string name="title_region_list">Regiones</string>
+    <string name="height_label">Altura: %1$.2f m</string>
+    <string name="weight_label">Peso: %1$.2f kg</string>
+    <string name="number_label">Número Pokédex: %1$d</string>
+    <string name="action_loading">Cargando...</string>
+</resources>
