@@ -19,6 +19,12 @@
             android:layout_height="?attr/actionBarSize"
             app:popupTheme="@style/AppTheme.PopupOverlay" />
 
+        <SearchView
+            android:id="@+id/pokemon_searchView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:iconifiedByDefault="false" />
+
     </android.support.design.widget.AppBarLayout>
 
     <FrameLayout

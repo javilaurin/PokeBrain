@@ -1,28 +1,22 @@
 package com.laurinware.pokebrain.View;
 
-import android.app.Activity;
+import android.app.AlertDialog;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.text.TextWatcher;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Filter;
-import android.widget.Filterable;
 import android.widget.SearchView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -30,7 +24,6 @@ import android.widget.Toast;
 import com.laurinware.pokebrain.Model.PokemonList;
 import com.laurinware.pokebrain.Model.PokemonListItem;
 import com.laurinware.pokebrain.R;
-import com.laurinware.pokebrain.Data.RemoteDataSource;
 import com.laurinware.pokebrain.ViewModel.PokemonListViewModel;
 
 import java.util.ArrayList;
@@ -55,10 +48,12 @@ public class PokemonListActivity extends AppCompatActivity {
     private PokemonListActivity act = this;
 
     PokemonListViewModel pokemonListViewModel;
-    RecyclerView recyclerView;
+    RecyclerView mRecyclerView;
 
-    SimpleItemRecyclerViewAdapter adapter;
+    SimpleItemRecyclerViewAdapter mAdapter;
     SearchView searchView;
+
+    List<PokemonListItem> mPokemonNamesList = new ArrayList<PokemonListItem>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,6 +63,7 @@ public class PokemonListActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         toolbar.setTitle(getTitle());
+
 
         // Show the Up button in the action bar.
         ActionBar actionBar = getSupportActionBar();
@@ -83,7 +79,7 @@ public class PokemonListActivity extends AppCompatActivity {
             mTwoPane = true;
         }
         searchView = (SearchView) findViewById(R.id.pokemon_searchView);
-        recyclerView = (RecyclerView) findViewById(R.id.pokemon_list);
+        mRecyclerView = (RecyclerView) findViewById(R.id.pokemon_list);
 
         final Toast t = Toast.makeText(this, getResources().getString(R.string.action_loading), Toast.LENGTH_SHORT);
         t.show();
@@ -92,8 +88,10 @@ public class PokemonListActivity extends AppCompatActivity {
             @Override
             public void onChanged(@Nullable PokemonList pokemonNamesList) {
                 //Log.d("ONCHANGED",pokemonNamesList.getResults().get(0).getName());
-                adapter = new SimpleItemRecyclerViewAdapter(act, pokemonNamesList.getResults(), mTwoPane);
-                recyclerView.setAdapter(adapter);
+                mPokemonNamesList.clear();
+                mPokemonNamesList.addAll(pokemonNamesList.getResults());
+                mAdapter = new SimpleItemRecyclerViewAdapter(act, pokemonNamesList.getResults(), mTwoPane);
+                mRecyclerView.setAdapter(mAdapter);
 
                 searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener(){
                     @Override
@@ -101,9 +99,19 @@ public class PokemonListActivity extends AppCompatActivity {
                         return false;
                     }
                     @Override
-                    public boolean onQueryTextChange(String newText) {
-                        adapter.getFilter().filter(newText);
-                        return false;
+                    public boolean onQueryTextChange(String query) {
+                        query = query.toLowerCase();
+
+                        final List<PokemonListItem> filteredModelList = new ArrayList<>();
+                        for (PokemonListItem model : mPokemonNamesList) {
+                            final String text = model.getName().toLowerCase();
+                            if (text.contains(query)) {
+                                filteredModelList.add(model);
+                            }
+                        }
+                        mAdapter.animateTo(filteredModelList);
+                        mRecyclerView.scrollToPosition(0);
+                        return true;
                     }
                 });
 
@@ -117,19 +125,47 @@ public class PokemonListActivity extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_list, menu);
+        getMenuInflater().inflate(R.menu.menu_main, menu);
 
         return true;
     }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+
+        switch (id){
+            case R.id.action_settings:
+                // TODO
+                Toast.makeText(this, "Settings activity", Toast.LENGTH_SHORT).show();
+                return true;
+            case R.id.action_about:
+                AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                builder.setMessage(R.string.action_about_text)
+                        .setCancelable(false)
+                        .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                //do things
+                            }
+                        });
+                AlertDialog alert = builder.create();
+                alert.show();
+                return true;
+        }
+
+
+        return super.onOptionsItemSelected(item);
+    }
 
     public static class SimpleItemRecyclerViewAdapter
             extends RecyclerView.Adapter<SimpleItemRecyclerViewAdapter.ViewHolder> {
 
         private final PokemonListActivity mParentActivity;
         private List<PokemonListItem> mValues;
-        private List<PokemonListItem> mCopiedValues;
-        CustomFilter customFilter = new CustomFilter();
+
         private final boolean mTwoPane;
         private final View.OnClickListener mOnClickListener = new View.OnClickListener() {
             @Override
@@ -160,7 +196,6 @@ public class PokemonListActivity extends AppCompatActivity {
             mParentActivity = parent;
             mTwoPane = twoPane;
 
-            mCopiedValues = mValues;
 
         }
 
@@ -189,6 +224,52 @@ public class PokemonListActivity extends AppCompatActivity {
         }
 
 
+        public PokemonListItem removeItem(int position) {
+            final PokemonListItem model = mValues.remove(position);
+            notifyItemRemoved(position);
+            return model;
+        }
+
+        public void addItem(int position, PokemonListItem model) {
+            mValues.add(position, model);
+            notifyItemInserted(position);
+        }
+
+        public void moveItem(int fromPosition, int toPosition) {
+            final PokemonListItem model = mValues.remove(fromPosition);
+            mValues.add(toPosition, model);
+            notifyItemMoved(fromPosition, toPosition);
+        }
+        public void animateTo(List<PokemonListItem> models) {
+            applyAndAnimateRemovals(models);
+            applyAndAnimateAdditions(models);
+            applyAndAnimateMovedItems(models);
+        }
+        private void applyAndAnimateRemovals(List<PokemonListItem> newModels) {
+            for (int i = mValues.size() - 1; i >= 0; i--) {
+                final PokemonListItem model = mValues.get(i);
+                if (!newModels.contains(model)) {
+                    removeItem(i);
+                }
+            }
+        }
+        private void applyAndAnimateAdditions(List<PokemonListItem> newModels) {
+            for (int i = 0, count = newModels.size(); i < count; i++) {
+                final PokemonListItem model = newModels.get(i);
+                if (!mValues.contains(model)) {
+                    addItem(i, model);
+                }
+            }
+        }
+        private void applyAndAnimateMovedItems(List<PokemonListItem> newModels) {
+            for (int toPosition = newModels.size() - 1; toPosition >= 0; toPosition--) {
+                final PokemonListItem model = newModels.get(toPosition);
+                final int fromPosition = mValues.indexOf(model);
+                if (fromPosition >= 0 && fromPosition != toPosition) {
+                    moveItem(fromPosition, toPosition);
+                }
+            }
+        }
 
         class ViewHolder extends RecyclerView.ViewHolder {
             final TextView mIdView;
@@ -199,43 +280,6 @@ public class PokemonListActivity extends AppCompatActivity {
                 mIdView = (TextView) view.findViewById(R.id.id_text);
                 mContentView = (TextView) view.findViewById(R.id.content);
             }
-        }
-
-        public Filter getFilter() {
-            if (customFilter == null) {
-                customFilter = new CustomFilter();
-            }
-            return customFilter;
-        }
-
-        private class CustomFilter extends Filter {
-            @Override
-            protected FilterResults performFiltering(CharSequence constraint) {
-                FilterResults results = new FilterResults();
-
-                if (constraint != null && constraint.length() > 0) {
-                    List<PokemonListItem> filterList = new ArrayList<PokemonListItem>();
-                    for (int i = 0; i < mValues.size(); i++) {
-                        //Se filtra por el nombre del pokemon
-                        if ((mValues.get(i).getName().toUpperCase()).contains(constraint.toString().toUpperCase())) {
-                            filterList.add(mValues.get(i));
-                        }
-                    }
-                    results.count = filterList.size();
-                    results.values = filterList;
-                } else {
-                    results.count = mCopiedValues.size();
-                    results.values = mCopiedValues;
-                }
-                return results;
-            }
-
-            @Override
-            protected void publishResults(CharSequence constraint, FilterResults results) {
-                mCopiedValues = (ArrayList) results.values;
-                notifyDataSetChanged();
-            }
-
         }
     }
 }
