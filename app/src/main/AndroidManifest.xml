@@ -26,6 +26,7 @@
             android:name=".View.PokemonListActivity"
             android:label="@string/app_name"
             android:parentActivityName=".View.MainActivity"
+            android:launchMode="singleTask"
             android:theme="@style/AppTheme.NoActionBar">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
@@ -43,7 +44,13 @@
         <activity
             android:name=".View.RegionListActivity"
             android:label="@string/title_region_list"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:parentActivityName=".View.MainActivity"
+            android:launchMode="singleTask"
+            android:theme="@style/AppTheme.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.laurinware.pokebrain.View.MainActivity" />
+        </activity>
         <activity
             android:name=".View.RegionDetailActivity"
             android:label="@string/title_region_detail"

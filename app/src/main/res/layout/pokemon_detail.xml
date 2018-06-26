@@ -12,7 +12,7 @@
     <ImageView
         android:id="@+id/pokemon_imageView"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:layout_weight="0"
         android:src="@drawable/ic_random_pokemon_fab" />
 
