@@ -83,7 +83,7 @@ public class PokemonDetailFragment extends Fragment {
                     ImageView imageView = (ImageView) activity.findViewById(R.id.pokemon_imageView);
                     Glide.with(act)
                             .load(mItem.getSprites().getFrontDefault())
-                            .apply(new RequestOptions().override(288, 288))
+                            .apply(new RequestOptions().override(384, 384))
                             .into(imageView);
                     t.cancel();
                 }

@@ -13,6 +13,7 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -90,14 +91,13 @@ public class RegionListActivity extends AppCompatActivity {
         private final RegionListActivity mParentActivity;
         private final List<RegionItem> mValues;
         private final boolean mTwoPane;
-        // TODO if regions list is expanded to detail
-        /*private final View.OnClickListener mOnClickListener = new View.OnClickListener() {
+        private final View.OnClickListener mOnClickListener = new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                DummyContent.DummyItem item = (DummyContent.DummyItem) view.getTag();
+                RegionItem item = (RegionItem) view.getTag();
                 if (mTwoPane) {
                     Bundle arguments = new Bundle();
-                    arguments.putString(RegionDetailFragment.ARG_ITEM_ID, item.id);
+                    arguments.putString(RegionDetailFragment.ARG_ITEM_ID, item.getName());
                     RegionDetailFragment fragment = new RegionDetailFragment();
                     fragment.setArguments(arguments);
                     mParentActivity.getSupportFragmentManager().beginTransaction()
@@ -106,12 +106,13 @@ public class RegionListActivity extends AppCompatActivity {
                 } else {
                     Context context = view.getContext();
                     Intent intent = new Intent(context, RegionDetailActivity.class);
-                    intent.putExtra(RegionDetailFragment.ARG_ITEM_ID, item.id);
+                    intent.putExtra(RegionDetailFragment.ARG_ITEM_ID, item.getName());
 
                     context.startActivity(intent);
                 }
+                //Log.d("NAME" ,item.getName());
             }
-        };*/
+        };
 
         SimpleItemRecyclerViewAdapter(RegionListActivity parent,
                                       List<RegionItem> items,
@@ -119,6 +120,16 @@ public class RegionListActivity extends AppCompatActivity {
             mValues = items;
             mParentActivity = parent;
             mTwoPane = twoPane;
+
+            if (mTwoPane) {
+                Bundle arguments = new Bundle();
+                arguments.putString(RegionDetailFragment.ARG_ITEM_ID, "BASE");
+                RegionDetailFragment fragment = new RegionDetailFragment();
+                fragment.setArguments(arguments);
+                mParentActivity.getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.region_detail_container, fragment)
+                        .commit();
+            }
         }
 
         @Override
@@ -137,8 +148,7 @@ public class RegionListActivity extends AppCompatActivity {
             holder.mContentView.setText(upName);
 
             holder.itemView.setTag(mValues.get(position));
-            // TODO if regions list is expanded to detail
-            // holder.itemView.setOnClickListener(mOnClickListener);
+            holder.itemView.setOnClickListener(mOnClickListener);
         }
 
         @Override
