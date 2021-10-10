@@ -43,9 +43,10 @@ public class MainActivity extends AppCompatActivity {
                 Random r = new Random();
                 int num = r.nextInt( 802) + 1;
                 Log.d("RANDOM", "Numero: " + num);
-                String url = String.format("https://pokeapi.co/api/v2/pokemon/%1$d/", num);
+                String url = "https://pokeapi.co/api/v2/pokemon/" + num;
                 Intent intent = new Intent(context, PokemonDetailActivity.class);
                 intent.putExtra(PokemonDetailFragment.ARG_ITEM_ID, url);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 
                 context.startActivity(intent);
             }
