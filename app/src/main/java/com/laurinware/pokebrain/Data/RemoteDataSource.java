@@ -1,11 +1,10 @@
 package com.laurinware.pokebrain.Data;
 
-import android.arch.lifecycle.MutableLiveData;
+import androidx.lifecycle.MutableLiveData;
 import android.util.Log;
 
 import com.laurinware.pokebrain.Model.Pokemon;
 import com.laurinware.pokebrain.Model.PokemonList;
-import com.laurinware.pokebrain.Model.RegionItem;
 import com.laurinware.pokebrain.Model.RegionList;
 
 import retrofit2.Call;

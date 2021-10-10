@@ -1,14 +1,14 @@
 package com.laurinware.pokebrain.View;
 
 import android.app.Activity;
-import android.arch.lifecycle.Observer;
-import android.arch.lifecycle.ViewModelProviders;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProviders;
 import android.content.res.Resources;
-import android.graphics.Typeface;
-import android.support.annotation.Nullable;
-import android.support.design.widget.CollapsingToolbarLayout;
+
+import androidx.annotation.Nullable;
+import com.google.android.material.appbar.CollapsingToolbarLayout;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
+import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,7 +20,6 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.laurinware.pokebrain.Model.Pokemon;
 import com.laurinware.pokebrain.R;
-import com.laurinware.pokebrain.Data.RemoteDataSource;
 import com.laurinware.pokebrain.ViewModel.PokemonListViewModel;
 
 /**
